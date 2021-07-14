@@ -107,7 +107,7 @@ func getRatingParams(r *http.Request) (float64, float64, error) {
 }
 
 func getLimitParam(r *http.Request) (int, error) {
-	limit := 0
+	limit := 10
 	queryParams := r.URL.Query()
 	l := queryParams.Get("limit")
 	if l != "" {
@@ -186,4 +186,24 @@ func deleteByISBN(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusNotFound)
 	w.Write([]byte(`{"error": "not found"}`))
+}
+
+func listAuthors(w http.ResponseWriter, r *http.Request) {
+	limit, err := getLimitParam(r)
+	skip, err := getSkipParam(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(`{"error": "invalid datatype for parameter"}`))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	data := books.ListAuthors(limit + skip, skip)
+	b, err := json.Marshal(data)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(`{"error": "error marshalling data"}`))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 }

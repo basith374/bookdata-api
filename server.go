@@ -31,6 +31,7 @@ func main() {
 	api.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "api v1")
 	})
+	api.HandleFunc("/authors", listAuthors).Methods(http.MethodGet)
 	api.HandleFunc("/books/authors/{author}", searchByAuthor).Methods(http.MethodGet)
 	api.HandleFunc("/books/book-name/{bookName}", searchByBookName).Methods(http.MethodGet)
 	api.HandleFunc("/book/isbn/{isbn}", searchByISBN).Methods(http.MethodGet)

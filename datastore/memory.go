@@ -33,6 +33,28 @@ func (b *Books) SearchAuthor(author string, ratingOver, ratingBelow float64, lim
 	return &data
 }
 
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+	return false
+}
+
+func (b *Books) ListAuthors(limit, skip int) []string {
+	arr := []string{}
+	for _, v := range *b.Store {
+		if !contains(arr, v.Authors) {
+			arr = append(arr, v.Authors)
+		}
+	}
+	if limit == 0 || limit > len(arr) {
+		limit = len(arr)
+	}
+	return arr[skip:limit]
+}
+
 func (b *Books) SearchBook(bookName string, ratingOver, ratingBelow float64, limit, skip int) *[]*loader.BookData {
 	ret := Filter(b.Store, func(v *loader.BookData) bool {
 		return strings.Contains(strings.ToLower(v.Title), strings.ToLower(bookName)) && v.AverageRating > ratingOver && v.AverageRating < ratingBelow

@@ -10,4 +10,5 @@ type BookStore interface {
 	CreateBook(book *loader.BookData) bool
 	DeleteBook(isbn string) bool
 	UpdateBook(isbn string, book *loader.BookData) bool
+	ListAuthors(limit, skip int) []string
 }
